@@ -1,0 +1,2101 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>YouTube SEO Monitor</title>
+    <style>
+      /* ---------------------------------------------------------- bien mau */
+      :root {
+        --bg: #f6f7f9;
+        --panel: #ffffff;
+        --panel-2: #f1f3f6;
+        --border: #dfe3e8;
+        --text: #16191d;
+        --muted: #6b7280;
+        --accent: #b02020;
+        --up: #15803d;
+        --down: #c2410c;
+        --bad: #b91c1c;
+        --shadow: 0 1px 2px rgba(16, 20, 26, 0.06), 0 4px 12px rgba(16, 20, 26, 0.04);
+        --radius: 10px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #14171c;
+          --panel: #1b1f26;
+          --panel-2: #22272f;
+          --border: #2e343d;
+          --text: #e7eaee;
+          --muted: #9aa3af;
+          --accent: #ef4444;
+          --up: #4ade80;
+          --down: #fb923c;
+          --bad: #f87171;
+          --shadow: none;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 0 24px 48px;
+        background: var(--bg);
+        color: var(--text);
+        font: 14px/1.5 -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+      h1 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 650;
+        letter-spacing: -0.01em;
+      }
+      h2 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 650;
+      }
+      code {
+        background: var(--panel-2);
+        border-radius: 4px;
+        padding: 1px 5px;
+        font-size: 12px;
+      }
+
+      /* ------------------------------------------------------------ topbar */
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin: 0 -24px 20px;
+        padding: 14px 24px;
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .logo {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        flex: none;
+      }
+      .meta {
+        margin: 2px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        padding: 7px 14px;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        background: var(--panel);
+        color: var(--text);
+        font: inherit;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background: var(--panel-2);
+      }
+      .btn.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .btn.primary:hover {
+        filter: brightness(1.08);
+      }
+      .btn:disabled {
+        opacity: 0.55;
+        cursor: default;
+      }
+      /* ------------------------------------------------------------ status */
+      .status {
+        margin-bottom: 16px;
+        padding: 10px 14px;
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--muted);
+        border-radius: var(--radius);
+        background: var(--panel);
+        font-size: 13px;
+      }
+      .status.error {
+        border-left-color: var(--bad);
+        color: var(--bad);
+      }
+      .status.busy {
+        border-left-color: var(--accent);
+      }
+
+      /* ------------------------------------------------------------- panel */
+      .panel {
+        margin-bottom: 20px;
+        padding: 16px 18px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+      .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+      .footnote {
+        margin: 12px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      /* --------------------------------------------------------- o nhap lieu */
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        background: var(--bg);
+        color: var(--text);
+        font: inherit;
+      }
+      input:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: -1px;
+      }
+      .hint {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      .check.inline {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .linkbtn {
+        border: 0;
+        background: none;
+        padding: 0;
+        color: var(--accent);
+        font: inherit;
+        font-size: 12px;
+        cursor: pointer;
+        text-decoration: underline;
+      }
+
+      /* --------------------------------------------------- man hinh nhap key */
+      .key-panel {
+        max-width: 620px;
+        margin: 40px auto 20px;
+      }
+      .key-panel input {
+        font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+      }
+      .guide {
+        margin-top: 16px;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+        font-size: 13px;
+      }
+      .guide summary {
+        cursor: pointer;
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .guide ol {
+        margin: 12px 0;
+        padding-left: 20px;
+        color: var(--muted);
+      }
+      .guide li {
+        margin-bottom: 6px;
+      }
+      .guide a {
+        color: var(--accent);
+      }
+
+      /* ------------------------------------------------- them / xoa kenh */
+      .add-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 14px;
+      }
+      .add-row input {
+        flex: 1;
+        min-width: 0;
+      }
+      .add-row .btn {
+        flex: none;
+        white-space: nowrap;
+      }
+      .add-hint {
+        margin: 6px 0 0;
+      }
+      .channel-list {
+        margin: 14px 0;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      .channel-list:empty {
+        display: none;
+      }
+      .chan-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 12px;
+        border-bottom: 1px solid var(--border);
+      }
+      .chan-row:last-child {
+        border-bottom: 0;
+      }
+      .chan-row:nth-child(odd) {
+        background: var(--panel-2);
+      }
+      .chan-row img {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        flex: none;
+        background: var(--border);
+      }
+      .chan-row .who {
+        flex: 1;
+        min-width: 0;
+      }
+      .chan-row .who b {
+        display: block;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .chan-row .who span {
+        color: var(--muted);
+        font-size: 12px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: block;
+      }
+      .chan-row .rm {
+        flex: none;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: var(--panel);
+        color: var(--muted);
+        padding: 4px 10px;
+        font: inherit;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .chan-row .rm:hover {
+        color: var(--bad);
+        border-color: var(--bad);
+      }
+      .panel-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 16px;
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
+      }
+      .foot-actions {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .linkbtn.danger-link {
+        color: var(--bad);
+      }
+      .empty-list {
+        margin: 14px 0;
+        padding: 18px;
+        border: 1px dashed var(--border);
+        border-radius: var(--radius);
+        color: var(--muted);
+        font-size: 13px;
+        text-align: center;
+      }
+
+      /* ------------------------------------------------------------- tiles */
+      .tiles {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .tile {
+        padding: 14px 16px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+      .tile .k {
+        color: var(--muted);
+        font-size: 11.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .tile .v {
+        margin-top: 4px;
+        font-size: 22px;
+        font-weight: 650;
+        font-variant-numeric: tabular-nums;
+      }
+      .tile .s {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      /* ------------------------------------------------------------- table */
+      .table-wrap {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-variant-numeric: tabular-nums;
+      }
+      th,
+      td {
+        padding: 9px 10px;
+        text-align: right;
+        white-space: nowrap;
+        border-bottom: 1px solid var(--border);
+      }
+      th {
+        position: sticky;
+        top: 0;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 650;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+        user-select: none;
+        background: var(--panel);
+      }
+      th:hover {
+        color: var(--text);
+      }
+      th.sorted::after {
+        content: " \2193";
+      }
+      th.sorted.asc::after {
+        content: " \2191";
+      }
+      th:first-child,
+      td:first-child {
+        text-align: left;
+      }
+      tbody tr:hover {
+        background: var(--panel-2);
+      }
+      tbody tr:last-child td {
+        border-bottom: 0;
+      }
+      .chan {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        max-width: 260px;
+      }
+      .chan img {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        flex: none;
+        background: var(--panel-2);
+      }
+      .chan a {
+        color: inherit;
+        text-decoration: none;
+        font-weight: 550;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .chan a:hover {
+        color: var(--accent);
+        text-decoration: underline;
+      }
+      .up {
+        color: var(--up);
+      }
+      .down {
+        color: var(--down);
+      }
+      .dim {
+        color: var(--muted);
+      }
+      .warn-cell {
+        color: var(--bad);
+        font-weight: 600;
+      }
+      .spark {
+        display: block;
+      }
+      .top-title {
+        max-width: 240px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: left;
+        color: var(--muted);
+        font-size: 12.5px;
+      }
+      .top-title a {
+        color: inherit;
+      }
+
+      /* ------------------------------------------------------------ alerts */
+      .alert {
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .alert:last-child {
+        border-bottom: 0;
+      }
+      .alert .who {
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .alert ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .ok {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      /* ------------------------------------------------------------- empty */
+      .empty {
+        max-width: 460px;
+        margin: 60px auto;
+        text-align: center;
+        color: var(--muted);
+      }
+      .empty h2 {
+        margin-bottom: 8px;
+        color: var(--text);
+        font-size: 16px;
+      }
+
+      /* --------------------------------------------------------- head-tools */
+      .head-tools {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      /* O chon sap xep chi can khi bang o dang the (dien thoai) */
+      .sort-mobile {
+        display: none;
+        align-items: center;
+        gap: 6px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .sort-mobile select {
+        padding: 6px 8px;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        background: var(--bg);
+        color: var(--text);
+        font: inherit;
+        font-size: 13px;
+      }
+
+      /* ===================================================================
+         DIEN THOAI - duoi 640px.
+         Bang 11 cot khong the nhet vua man hinh 375px, nen moi dong doi
+         thanh mot the: nhan cot lay tu data-label, gia tri nam ben phai.
+         =================================================================== */
+      @media (max-width: 640px) {
+        body {
+          padding: 0 12px 32px;
+        }
+        .topbar {
+          margin: 0 -12px 16px;
+          padding: 12px;
+          gap: 10px;
+        }
+        .actions {
+          width: 100%;
+        }
+        .actions .btn {
+          flex: 1; /* nut Cap nhat trai rong het hang cho de bam */
+        }
+        .btn {
+          padding: 11px 16px; /* du 44px chieu cao theo chuan cham */
+        }
+        .panel {
+          padding: 14px;
+        }
+        .tiles {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 10px;
+        }
+
+        /* --- them kenh: xep doc cho o nhap duoc tron chieu ngang --- */
+        .add-row {
+          flex-direction: column;
+        }
+        .add-row input,
+        .add-row .btn {
+          width: 100%;
+        }
+        input[type="text"],
+        input[type="password"] {
+          font-size: 16px; /* duoi 16px la iOS tu phong to khi bam vao o */
+          padding: 11px 12px;
+        }
+        .chan-row {
+          padding: 10px;
+        }
+        .chan-row .rm {
+          padding: 8px 12px;
+        }
+
+        /* --- bang doi thanh the --- */
+        .sort-mobile {
+          display: flex;
+        }
+        .head-tools {
+          width: 100%;
+          justify-content: space-between;
+        }
+        .table-wrap {
+          overflow-x: visible;
+        }
+        #table thead {
+          display: none;
+        }
+        #table,
+        #table tbody,
+        #table tr,
+        #table td {
+          display: block;
+          width: 100%;
+        }
+        #table tr {
+          margin-bottom: 12px;
+          border: 1px solid var(--border);
+          border-radius: var(--radius);
+          overflow: hidden;
+        }
+        #table tr:last-child {
+          margin-bottom: 0;
+        }
+        #table tbody tr:hover {
+          background: none;
+        }
+        #table td {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          padding: 7px 12px;
+          border-bottom: 0;
+          text-align: right;
+          white-space: normal;
+        }
+        #table td::before {
+          content: attr(data-label);
+          flex: none;
+          color: var(--muted);
+          font-size: 11px;
+          font-weight: 650;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          text-align: left;
+        }
+        /* o dau tien la ten kenh - lam thanh tieu de cua the */
+        #table td:first-child {
+          padding: 10px 12px;
+          margin-bottom: 4px;
+          background: var(--panel-2);
+          border-bottom: 1px solid var(--border);
+        }
+        #table td:first-child::before {
+          display: none;
+        }
+        #table tr:last-child td:last-child {
+          border-bottom: 0;
+        }
+        .chan {
+          max-width: none;
+        }
+        /* Tieu de video qua dai de nhet canh nhan -> cho xuong dong rieng */
+        #table td.top-title {
+          display: block;
+          max-width: none;
+          text-align: left;
+          white-space: normal;
+          overflow: visible;
+        }
+        #table td.top-title::before {
+          display: block;
+          margin-bottom: 2px;
+        }
+        .spark {
+          margin-left: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <svg class="logo" viewBox="0 0 100 100" aria-hidden="true">
+          <rect width="100" height="100" rx="22" fill="#b02020" />
+          <rect x="20" y="48" width="16" height="32" fill="#fff" />
+          <rect x="42" y="30" width="16" height="50" fill="#fff" />
+          <rect x="64" y="14" width="16" height="66" fill="#fff" />
+        </svg>
+        <div>
+          <h1>YouTube SEO Monitor</h1>
+          <p id="meta" class="meta">Chưa có dữ liệu</p>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="refresh" class="btn primary">Cập nhật dữ liệu</button>
+        <button id="toggle-channels" class="btn">Thêm kênh</button>
+      </div>
+    </header>
+
+    <div id="status" class="status" hidden></div>
+
+    <section id="key-panel" class="panel key-panel" hidden>
+      <h2>Nhập API key để bắt đầu</h2>
+      <p class="hint">
+        Công cụ đọc dữ liệu công khai của YouTube nên cần một API key miễn phí của Google. Key
+        này lưu trong trình duyệt của bạn, không gửi đi đâu ngoài <code>googleapis.com</code>.
+      </p>
+
+      <div class="add-row">
+        <input id="api-key" type="password" spellcheck="false" autocomplete="off"
+          placeholder="AIzaSy..." />
+        <button id="save-key" class="btn primary">Lưu key</button>
+      </div>
+      <p class="hint add-hint">
+        <button id="show-key" type="button" class="linkbtn">Hiện key</button>
+      </p>
+
+      <details class="guide">
+        <summary>Chưa có key? Lấy trong khoảng 3 phút, miễn phí</summary>
+        <ol>
+          <li>Mở <a href="https://console.cloud.google.com/" target="_blank" rel="noreferrer">console.cloud.google.com</a> và đăng nhập Google</li>
+          <li>Tạo project mới: bấm ô chọn project ở góc trên trái → <b>New Project</b> → đặt tên tuỳ ý</li>
+          <li>Vào <b>APIs &amp; Services → Library</b>, tìm <b>YouTube Data API v3</b> → bấm <b>Enable</b></li>
+          <li>Vào <b>APIs &amp; Services → Credentials</b> → <b>Create Credentials</b> → <b>API key</b></li>
+          <li>Copy chuỗi vừa hiện ra rồi dán vào ô trên</li>
+        </ol>
+        <p class="hint">
+          Key chỉ đọc dữ liệu công khai, không đụng được vào kênh của bạn. Mỗi project được
+          10.000 units/ngày miễn phí — thừa sức cho việc theo dõi vài chục kênh.
+        </p>
+      </details>
+    </section>
+
+    <section id="channels-panel" class="panel" hidden>
+      <h2>Danh sách kênh</h2>
+
+      <div class="add-row">
+        <input id="new-channel" type="text" spellcheck="false" autocomplete="off"
+          placeholder="Dán link kênh, @handle hoặc UC..." />
+        <button id="add-channel" class="btn primary">Thêm</button>
+      </div>
+      <p class="hint add-hint">
+        Nhận link kênh, <code>@tenkenh</code> hoặc channel ID dạng <code>UC...</code>. Kênh được
+        kiểm tra ngay khi thêm, nên sai link là biết liền.
+      </p>
+
+      <div id="channel-list" class="channel-list"></div>
+
+      <div class="panel-foot">
+        <span id="storage-info" class="hint"></span>
+        <span class="foot-actions">
+          <button id="change-key" type="button" class="linkbtn">Đổi API key</button>
+          <button id="wipe-history" type="button" class="linkbtn danger-link">Xoá lịch sử</button>
+          <button id="wipe-all" type="button" class="linkbtn danger-link">Xoá sạch mọi thứ</button>
+        </span>
+      </div>
+    </section>
+
+    <main id="content" hidden>
+      <section class="tiles" id="tiles"></section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Bảng theo dõi</h2>
+          <div class="head-tools">
+            <label class="sort-mobile">
+              <span>Sắp theo</span>
+              <select id="sort-by"></select>
+            </label>
+            <label class="check inline">
+              <input id="show-detail" type="checkbox" />
+              <span>Hiện cột chi tiết</span>
+            </label>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table id="table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="footnote">
+          Bấm tiêu đề cột (hoặc chọn ở ô <em>Sắp theo</em> trên điện thoại) để sắp xếp.
+          <strong>XU HƯỚNG</strong> so median 10 video mới với 10
+          video liền trước; <strong>VIEW/NGÀY</strong> là tốc độ kéo view trung bình của video mới —
+          đây là hai cột quan trọng nhất với SEO. Trong nhóm cột chi tiết,
+          <strong>VIEW VIDEO TOP</strong> là view của video nhiều view nhất trong 20 video gần
+          nhất (chỉ tính video dài), không phải video top của cả kênh.
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2>Cần chú ý</h2>
+        <div id="alerts"></div>
+      </section>
+
+    </main>
+
+    <section id="empty" class="empty" hidden>
+      <h2>Chưa có dữ liệu</h2>
+      <p>Bấm <b>Thêm kênh</b> ở trên để chọn kênh cần theo dõi, sau đó bấm <b>Cập nhật dữ liệu</b>.</p>
+    </section>
+
+    <script>
+      /* Toan bo logic tinh toan duoi day duoc port tu yt_monitor.py va da doi chieu
+         cho khop tung truong. Khong dung module de trang chay duoc khi mo bang file://  */
+      (function () {
+        "use strict";
+
+        // ===================================================================
+        //  KHONG co API key trong file nay - moi nguoi dung tu nhap key cua
+        //  minh, key luu trong localStorage cua chinh trinh duyet ho. Nho vay
+        //  trang dua len web cong khai duoc ma khong lo ai xai ke quota.
+        //
+        //  Tran units tu dat cho moi ngay. Han muc that cua Google la 10.000.
+        //  Dat thap hon de lo bam nhieu lan cung khong het quota ca ngay.
+        //  Moi lan cap nhat N kenh ton  1 + N + ceil(N*20/50)  units:
+        //     5 kenh -> 8    10 kenh -> 15    20 kenh -> 29
+        //  Them 1 kenh moi ton 1 unit (chi ton dung mot lan).
+        var DAILY_UNIT_BUDGET = 500;
+        // ===================================================================
+
+        var BASE = "https://www.googleapis.com/youtube/v3";
+        var LOOKBACK_N = 20; // lay 20 video gan nhat moi kenh
+        var RECENT_N = 10; // 10 video moi nhat = "hien tai", 10 video ke tiep = "truoc do"
+        var SHORTS_MAX_SEC = 60;
+        var MAX_SNAPSHOTS = 180;
+        var STORE_KEY = "yt-seo-monitor";
+
+        // ------------------------------------------------------------ tien ich
+
+        function ApiError(message, reason) {
+          var e = new Error(message);
+          e.name = "ApiError";
+          e.reason = reason || "";
+          return e;
+        }
+
+        function chunks(seq, n) {
+          var out = [];
+          for (var i = 0; i < seq.length; i += n) out.push(seq.slice(i, i + n));
+          return out;
+        }
+
+        function parseDuration(iso) {
+          var m = /^P(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?$/.exec(iso || "");
+          if (!m) return 0;
+          var d = m[1] ? parseInt(m[1], 10) : 0;
+          var h = m[2] ? parseInt(m[2], 10) : 0;
+          var mi = m[3] ? parseInt(m[3], 10) : 0;
+          var s = m[4] ? parseInt(m[4], 10) : 0;
+          return d * 86400 + h * 3600 + mi * 60 + s;
+        }
+
+        function daysSince(isoTs) {
+          var t = Date.parse(isoTs || "");
+          if (isNaN(t)) return null;
+          return Math.max((Date.now() - t) / 86400000, 0.01);
+        }
+
+        function median(nums) {
+          if (!nums.length) return 0;
+          var a = nums.slice().sort(function (x, y) {
+            return x - y;
+          });
+          var mid = a.length >> 1;
+          return a.length % 2 ? a[mid] : (a[mid - 1] + a[mid]) / 2;
+        }
+
+        function mean(nums) {
+          if (!nums.length) return 0;
+          return nums.reduce(function (s, n) {
+            return s + n;
+          }, 0) / nums.length;
+        }
+
+        function pctChange(newVal, oldVal) {
+          if (!oldVal) return null;
+          return ((newVal - oldVal) / oldVal) * 100;
+        }
+
+        // 1234567 -> 1.234.567 (kieu VN)
+        function fmt(n) {
+          var v = Number(n);
+          if (!isFinite(v)) return "-";
+          return Math.round(v).toLocaleString("vi-VN");
+        }
+
+        // "" trong CSV nghia la khong co du lieu - phai ra null, khong duoc ra 0
+        function num(v) {
+          if (v === "" || v === null || v === undefined) return null;
+          var n = Number(v);
+          return isFinite(n) ? n : null;
+        }
+
+        function todayStr() {
+          var d = new Date();
+          var p = function (x) {
+            return String(x).length < 2 ? "0" + x : String(x);
+          };
+          return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+        }
+
+        function dmy(iso) {
+          var p = (iso || "").split("-");
+          return p.length === 3 ? p[2] + "/" + p[1] + "/" + p[0] : iso;
+        }
+
+        // ------------------------------------------------------- dem units
+
+        // Quota cua Google dat lai luc 0h gio Thai Binh Duong, khong phai 0h gio
+        // VN. Dem theo ngay ben do thi bo dem nay reset dung luc quota that reset.
+        function quotaDate() {
+          try {
+            return new Date().toLocaleDateString("en-CA", {
+              timeZone: "America/Los_Angeles"
+            });
+          } catch (e) {
+            return todayStr(); // trinh duyet qua cu - dung tam ngay may
+          }
+        }
+
+        function usageToday() {
+          var data = loadAll();
+          var d = quotaDate();
+          if (!data.usage || data.usage.date !== d) data.usage = { date: d, units: 0 };
+          return data.usage;
+        }
+
+        function unitsLeft() {
+          return Math.max(DAILY_UNIT_BUDGET - usageToday().units, 0);
+        }
+
+        // Moi lenh list cua YouTube Data API deu ton dung 1 unit
+        function spendUnit() {
+          var u = usageToday();
+          if (u.units >= DAILY_UNIT_BUDGET) {
+            throw ApiError(
+              "Đã chạm trần " + DAILY_UNIT_BUDGET + " units tự đặt cho hôm nay. " +
+                "Bộ đếm sẽ tự về 0 lúc 0h giờ Thái Bình Dương (khoảng 14–15h giờ VN).",
+              "localBudget"
+            );
+          }
+          u.units += 1;
+          saveAll();
+        }
+
+        // So units mot lan cap nhat N kenh se ton
+        function estimateUnits(n) {
+          return 1 + n + Math.ceil((n * LOOKBACK_N) / 50);
+        }
+
+        // -------------------------------------------------------------- goi API
+
+        function apiGet(endpoint, params, key) {
+          try {
+            spendUnit(); // chan cuoi cung: khong request nao di ra ma khong duoc dem
+          } catch (e) {
+            return Promise.reject(e);
+          }
+          var qs = new URLSearchParams();
+          for (var k in params) qs.append(k, params[k]);
+          qs.append("key", key);
+          return fetch(BASE + "/" + endpoint + "?" + qs.toString(), {
+            headers: { Accept: "application/json" }
+          })
+            .catch(function () {
+              throw ApiError("Không kết nối được tới Google API. Kiểm tra mạng.", "network");
+            })
+            .then(function (resp) {
+              if (resp.ok) return resp.json();
+              return resp
+                .json()
+                .catch(function () {
+                  return {};
+                })
+                .then(function (body) {
+                  var err = body.error || {};
+                  var message = err.message || "HTTP " + resp.status;
+                  var reason = (err.errors && err.errors[0] && err.errors[0].reason) || "";
+                  if (reason === "quotaExceeded") {
+                    throw ApiError(
+                      "Hết quota API cho hôm nay (mỗi project được 10.000 units/ngày). " +
+                        "Đợi sang ngày mai hoặc xin tăng quota trong Google Cloud Console.",
+                      reason
+                    );
+                  }
+                  if (reason === "keyInvalid" || reason === "badRequest" || reason === "forbidden") {
+                    throw ApiError(
+                      "API key không hợp lệ hoặc chưa bật YouTube Data API v3. Chi tiết: " + message,
+                      reason
+                    );
+                  }
+                  throw ApiError(
+                    "Gọi API thất bại (" + resp.status + " " + reason + "): " + message,
+                    reason
+                  );
+                });
+            });
+        }
+
+        // ------------------------------------------- doc & nhan dien kenh
+
+        // Tra ve ['id'|'handle'|'username', gia_tri]
+        function classify(raw) {
+          var s = (raw || "").trim();
+          if (s.indexOf("http") === 0) {
+            var path = s;
+            try {
+              path = new URL(s).pathname;
+            } catch (e) {
+              /* khong parse duoc thi giu nguyen */
+            }
+            var parts = path.split("/").filter(Boolean).map(decodeURIComponent);
+            if (!parts.length) return ["handle", s];
+            if (parts[0] === "channel" && parts.length > 1) return ["id", parts[1]];
+            if (parts[0] === "user" && parts.length > 1) return ["username", parts[1]];
+            s = parts[0] === "c" && parts.length > 1 ? parts[1] : parts[0];
+          }
+          if (/^UC[A-Za-z0-9_-]{22}$/.test(s)) return ["id", s];
+          if (s.charAt(0) === "@") return ["handle", s];
+          return ["handle", "@" + s];
+        }
+
+        // Tra cuu 1 kenh ngay luc nguoi dung bam "Them kenh".
+        // Nho vay danh sach luu san channelId, cac lan cap nhat sau khong ton
+        // them luot tra cuu nao nua.
+        function lookupChannel(raw) {
+          var kind = classify(raw);
+          var params = { part: "snippet" };
+          if (kind[0] === "id") params.id = kind[1];
+          else params[kind[0] === "handle" ? "forHandle" : "forUsername"] = kind[1];
+
+          return apiGet("channels", params, getApiKey()).then(function (data) {
+            var items = data.items || [];
+            if (!items.length) {
+              throw ApiError(
+                "Không tìm thấy kênh nào khớp với “" + raw + "”. Kiểm tra lại link hoặc @handle.",
+                "notFound"
+              );
+            }
+            var it = items[0];
+            var snip = it.snippet || {};
+            var thumbs = snip.thumbnails || {};
+            return {
+              id: it.id,
+              ten: snip.title || it.id,
+              anh: (thumbs.default && thumbs.default.url) || "",
+              raw: raw
+            };
+          });
+        }
+
+        // ------------------------------------------------------- lay du lieu
+
+        function fetchChannels(ids, key) {
+          var out = [];
+          var chain = Promise.resolve();
+          chunks(ids, 50).forEach(function (group) {
+            chain = chain.then(function () {
+              return apiGet(
+                "channels",
+                {
+                  part: "snippet,statistics,contentDetails",
+                  id: group.join(","),
+                  maxResults: 50
+                },
+                key
+              ).then(function (data) {
+                out = out.concat(data.items || []);
+              });
+            });
+          });
+          return chain.then(function () {
+            return out;
+          });
+        }
+
+        function fetchRecentVideoIds(playlist, key) {
+          return apiGet(
+            "playlistItems",
+            { part: "contentDetails", playlistId: playlist, maxResults: LOOKBACK_N },
+            key
+          ).then(function (data) {
+            return (data.items || []).map(function (it) {
+              return it.contentDetails.videoId;
+            });
+          });
+        }
+
+        function fetchVideos(videoIds, key) {
+          var out = {};
+          var chain = Promise.resolve();
+          chunks(videoIds, 50).forEach(function (group) {
+            chain = chain.then(function () {
+              return apiGet(
+                "videos",
+                {
+                  part: "snippet,statistics,contentDetails",
+                  id: group.join(","),
+                  maxResults: 50
+                },
+                key
+              ).then(function (data) {
+                (data.items || []).forEach(function (it) {
+                  out[it.id] = it;
+                });
+              });
+            });
+          });
+          return chain.then(function () {
+            return out;
+          });
+        }
+
+        // --------------------------------------------------------- tinh toan
+
+        // videos: chi tiet video, thu tu moi -> cu
+        function buildRow(ch, videos) {
+          var snip = ch.snippet || {};
+          var stats = ch.statistics || {};
+          function viewsOf(v) {
+            return parseInt((v.statistics && v.statistics.viewCount) || 0, 10) || 0;
+          }
+
+          var longform = [];
+          var shorts = [];
+          videos.forEach(function (v) {
+            var dur = v.contentDetails && v.contentDetails.duration;
+            if (parseDuration(dur) <= SHORTS_MAX_SEC) shorts.push(v);
+            else longform.push(v);
+          });
+
+          var lfViews = longform.map(viewsOf);
+          var recentLf = lfViews.slice(0, RECENT_N);
+          var priorLf = lfViews.slice(RECENT_N, RECENT_N * 2);
+
+          var medRecent = recentLf.length ? median(recentLf) : 0;
+          var medPrior = priorLf.length ? median(priorLf) : 0;
+          var trend = pctChange(medRecent, medPrior);
+
+          // nhip dang bai: so ngay trung binh giua cac video gan nhat
+          var ages = videos
+            .map(function (v) {
+              return daysSince(v.snippet && v.snippet.publishedAt);
+            })
+            .filter(function (a) {
+              return a !== null;
+            });
+          var cadence =
+            ages.length > 1
+              ? (Math.max.apply(null, ages) - Math.min.apply(null, ages)) / (ages.length - 1)
+              : null;
+          var lastUpload = ages.length ? Math.min.apply(null, ages) : null;
+
+          // toc do keo view cua video moi (view/ngay) - tin hieu SEO ro nhat
+          var velocity = [];
+          longform.slice(0, RECENT_N).forEach(function (v) {
+            var a = daysSince(v.snippet && v.snippet.publishedAt);
+            if (a && a >= 1) velocity.push(viewsOf(v) / a);
+          });
+          var avgVelocity = velocity.length ? mean(velocity) : 0;
+
+          // ve sinh SEO tren metadata cua cac video moi
+          var counts = { title_dai: 0, mo_ta_ngan: 0, thieu_tag: 0 };
+          var checked = videos.slice(0, RECENT_N);
+          checked.forEach(function (v) {
+            var s = v.snippet || {};
+            if ((s.title || "").length > 70) counts.title_dai += 1;
+            if ((s.description || "").length < 200) counts.mo_ta_ngan += 1;
+            if (!s.tags || !s.tags.length) counts.thieu_tag += 1;
+          });
+
+          var top = null;
+          longform.forEach(function (v) {
+            if (!top || viewsOf(v) > viewsOf(top)) top = v;
+          });
+
+          function round1(x) {
+            return Math.round(x * 10) / 10;
+          }
+          // Khong luu URL anh dai dien vao snapshot: no chiem 17% moi dong ma
+          // danh sach kenh da giu san roi, tra cuu theo channel_id la ra.
+          return {
+            channel_id: ch.id,
+            ten_kenh: snip.title || "",
+            subs: parseInt(stats.subscriberCount || 0, 10) || 0,
+            tong_view: parseInt(stats.viewCount || 0, 10) || 0,
+            tong_video: parseInt(stats.videoCount || 0, 10) || 0,
+            median_view_10_moi: Math.trunc(medRecent),
+            median_view_10_truoc: Math.trunc(medPrior),
+            xu_huong_pct: trend === null ? "" : round1(trend),
+            view_moi_ngay: Math.trunc(avgVelocity),
+            nhip_dang_ngay: cadence ? round1(cadence) : "",
+            ngay_tu_video_cuoi: lastUpload === null ? "" : Math.trunc(lastUpload),
+            so_video_kiem_tra: checked.length,
+            so_shorts_trong_20: shorts.length,
+            loi_title_dai: counts.title_dai,
+            loi_mo_ta_ngan: counts.mo_ta_ngan,
+            loi_thieu_tag: counts.thieu_tag,
+            video_top: top ? (top.snippet.title || "").slice(0, 80) : "",
+            video_top_id: top ? top.id : "",
+            view_video_top: top ? viewsOf(top) : 0
+          };
+        }
+
+        // Canh bao - bam sat phan "CAN CHU Y" trong report()
+        function alertsFor(r) {
+          var msgs = [];
+          var t = r.xu_huong_pct;
+          if (t !== "" && t !== null && t !== undefined && Number(t) <= -30) {
+            msgs.push(
+              "10 video mới tụt " + Math.round(Number(t)) + "% view so với 10 video trước đó"
+            );
+          }
+          if (r.ngay_tu_video_cuoi !== "" && Number(r.ngay_tu_video_cuoi) > 21) {
+            msgs.push("không đăng bài " + r.ngay_tu_video_cuoi + " ngày");
+          }
+          var n = Number(r.so_video_kiem_tra) || 0;
+          if (n && Number(r.loi_thieu_tag) >= n * 0.5) {
+            msgs.push(r.loi_thieu_tag + "/" + n + " video mới không có tag");
+          }
+          if (n && Number(r.loi_mo_ta_ngan) >= n * 0.5) {
+            msgs.push(r.loi_mo_ta_ngan + "/" + n + " video mô tả dưới 200 ký tự");
+          }
+          if (n && Number(r.loi_title_dai) >= n * 0.5) {
+            msgs.push(
+              r.loi_title_dai + "/" + n + " video title dài quá 70 ký tự (bị cắt trên kết quả tìm kiếm)"
+            );
+          }
+          return msgs;
+        }
+
+        // Mot lan "chay": lay thong tin kenh -> lay video -> tinh toan.
+        // ids da duoc tra cuu san luc them kenh nen khong can nhan dien lai.
+        function collect(ids, key, onProgress) {
+          var report = onProgress || function () {};
+          var acc = {};
+          if (!ids.length) {
+            return Promise.reject(
+              ApiError("Chưa có kênh nào để theo dõi. Bấm Thêm kênh để bắt đầu.", "noChannel")
+            );
+          }
+          report("Đang tải thông tin " + ids.length + " kênh...");
+          return fetchChannels(ids, key)
+            .then(function (channels) {
+              acc.channels = channels;
+              acc.perChannel = {};
+              acc.allVideoIds = [];
+              var chain = Promise.resolve();
+              var done = 0;
+              channels.forEach(function (ch) {
+                chain = chain.then(function () {
+                  var rel = ch.contentDetails && ch.contentDetails.relatedPlaylists;
+                  var pl = rel && rel.uploads;
+                  var step = pl ? fetchRecentVideoIds(pl, key) : Promise.resolve([]);
+                  return step.then(function (vids) {
+                    acc.perChannel[ch.id] = vids;
+                    acc.allVideoIds = acc.allVideoIds.concat(vids);
+                    done += 1;
+                    report("Đang lấy video gần nhất... (" + done + "/" + channels.length + " kênh)");
+                  });
+                });
+              });
+              return chain;
+            })
+            .then(function () {
+              report("Đang phân tích " + acc.allVideoIds.length + " video...");
+              return fetchVideos(acc.allVideoIds, key);
+            })
+            .then(function (details) {
+              var rows = acc.channels.map(function (ch) {
+                var vids = (acc.perChannel[ch.id] || [])
+                  .map(function (v) {
+                    return details[v];
+                  })
+                  .filter(Boolean);
+                return buildRow(ch, vids);
+              });
+              return { rows: rows };
+            });
+        }
+
+        // ----------------------------------------------------------- luu tru
+
+        // localStorage co the bi chan (che do rieng tu, chinh sach trinh duyet).
+        // Khi do van chay duoc nhung khong nho duoc sang lan sau.
+        var memoryStore = null;
+        var storageBroken = false;
+
+        function loadAll() {
+          if (memoryStore) return memoryStore;
+          var raw = null;
+          try {
+            raw = window.localStorage.getItem(STORE_KEY);
+          } catch (e) {
+            storageBroken = true;
+          }
+          var data = { apiKey: "", snapshots: [], channels: [], usage: null };
+          if (raw) {
+            try {
+              var parsed = JSON.parse(raw);
+              data.apiKey = parsed.apiKey || "";
+              data.snapshots = parsed.snapshots || [];
+              data.channels = parsed.channels || [];
+              data.usage = parsed.usage || null;
+            } catch (e) {
+              /* du lieu hong thi bo qua, coi nhu trong */
+            }
+          }
+          memoryStore = data;
+          return data;
+        }
+
+        function getApiKey() {
+          return loadAll().apiKey;
+        }
+
+        function setApiKey(key) {
+          loadAll().apiKey = key;
+          saveAll();
+        }
+
+        function getChannels() {
+          return loadAll().channels;
+        }
+
+        function avatarOf(id) {
+          var hit = getChannels().filter(function (c) {
+            return c.id === id;
+          })[0];
+          return hit ? hit.anh : "";
+        }
+
+        function setChannels(list) {
+          loadAll().channels = list;
+          saveAll();
+        }
+
+        function saveAll() {
+          if (!memoryStore) return;
+          try {
+            window.localStorage.setItem(STORE_KEY, JSON.stringify(memoryStore));
+          } catch (e) {
+            storageBroken = true;
+          }
+        }
+
+        function getSnapshots() {
+          return loadAll().snapshots.slice().sort(function (a, b) {
+            return a.ts - b.ts;
+          });
+        }
+
+        // Moi ngay chi giu 1 snapshot: chay lai trong cung ngay se ghi de (giong ban Python)
+        function addSnapshot(rows) {
+          var data = loadAll();
+          var d = todayStr();
+          var kept = data.snapshots.filter(function (s) {
+            return s.date !== d;
+          });
+          kept.push({ date: d, ts: Date.now(), rows: rows });
+          kept.sort(function (a, b) {
+            return a.ts - b.ts;
+          });
+          data.snapshots = kept.slice(-MAX_SNAPSHOTS);
+          saveAll();
+          return data.snapshots;
+        }
+
+        // ------------------------------------------------------------- state
+
+        var state = {
+          snapshots: [],
+          rows: [],
+          prev: null,
+          sortKey: "view_moi_ngay",
+          sortAsc: false,
+          showDetail: false
+        };
+
+        function $(id) {
+          return document.getElementById(id);
+        }
+
+        function el(tag, props, children) {
+          var node = document.createElement(tag);
+          if (props) {
+            for (var k in props) {
+              var v = props[k];
+              if (k === "class") node.className = v;
+              else if (k === "text") node.textContent = v;
+              else if (v !== null && v !== undefined) node.setAttribute(k, v);
+            }
+          }
+          (children || []).forEach(function (c) {
+            if (c) node.appendChild(c);
+          });
+          return node;
+        }
+
+        function svgEl(tag, props) {
+          var node = document.createElementNS("http://www.w3.org/2000/svg", tag);
+          for (var k in props || {}) node.setAttribute(k, props[k]);
+          return node;
+        }
+
+        function showStatus(text, kind) {
+          var box = $("status");
+          box.textContent = text;
+          box.className = "status" + (kind ? " " + kind : "");
+          box.hidden = !text;
+        }
+
+        // ------------------------------------------------------------ render
+
+        function render() {
+          var last = state.snapshots[state.snapshots.length - 1];
+          state.rows = last ? last.rows : [];
+          var prevSnap = state.snapshots[state.snapshots.length - 2];
+          state.prev = prevSnap ? indexBy(prevSnap.rows) : null;
+
+          $("content").hidden = !last;
+          $("empty").hidden = !!last;
+          renderMeta();
+          if (!last) return;
+
+          renderTiles();
+          renderTable();
+          renderAlerts();
+          renderStorageInfo();
+        }
+
+        // Dong chu nho duoi tieu de - luon kem so units da dung hom nay
+        function renderMeta() {
+          var last = state.snapshots[state.snapshots.length - 1];
+          var prevSnap = state.snapshots[state.snapshots.length - 2];
+          var parts = [];
+
+          if (last) {
+            var when = new Date(last.ts);
+            parts.push("Cập nhật " + dmy(last.date) + " " + when.toTimeString().slice(0, 5));
+            parts.push(last.rows.length + " kênh");
+            if (prevSnap) parts.push("so sánh với " + dmy(prevSnap.date));
+          } else {
+            parts.push("Chưa có dữ liệu");
+          }
+
+          parts.push("quota hôm nay " + usageToday().units + "/" + DAILY_UNIT_BUDGET + " units");
+          $("meta").textContent = parts.join(" · ");
+        }
+
+        function indexBy(rows) {
+          var out = {};
+          rows.forEach(function (r) {
+            out[r.channel_id] = r;
+          });
+          return out;
+        }
+
+        function subDelta(r) {
+          if (!state.prev) return null;
+          var p = state.prev[r.channel_id];
+          if (!p) return null;
+          var a = num(r.subs);
+          var b = num(p.subs);
+          return a === null || b === null ? null : a - b;
+        }
+
+        function renderTiles() {
+          var rows = state.rows;
+          var totalSubs = rows.reduce(function (s, r) {
+            return s + (num(r.subs) || 0);
+          }, 0);
+          var deltas = rows.map(subDelta).filter(function (d) {
+            return d !== null;
+          });
+          var netDelta = deltas.reduce(function (s, d) {
+            return s + d;
+          }, 0);
+          var rising = rows.filter(function (r) {
+            return num(r.xu_huong_pct) !== null && num(r.xu_huong_pct) > 0;
+          }).length;
+          var flagged = rows.filter(function (r) {
+            return alertsFor(r).length > 0;
+          }).length;
+
+          var tiles = [
+            ["Kênh theo dõi", String(rows.length), rows.length ? "" : "chưa có kênh nào"],
+            [
+              "Tổng sub",
+              fmt(totalSubs),
+              deltas.length ? (netDelta >= 0 ? "+" : "") + fmt(netDelta) + " so với lần trước" : ""
+            ],
+            ["Kênh đang lên", rising + "/" + rows.length, "median 10 video mới tăng"],
+            ["Cần chú ý", String(flagged), flagged ? "xem mục bên dưới" : "không có cảnh báo"]
+          ];
+
+          var box = $("tiles");
+          box.textContent = "";
+          tiles.forEach(function (t) {
+            box.appendChild(
+              el("div", { class: "tile" }, [
+                el("div", { class: "k", text: t[0] }),
+                el("div", { class: "v", text: t[1] }),
+                el("div", { class: "s", text: t[2] })
+              ])
+            );
+          });
+        }
+
+        function columns() {
+          var cols = [
+            { key: "ten_kenh", label: "Kênh" },
+            { key: "subs", label: "Subs" },
+            { key: "_delta", label: "Sub +/-" },
+            { key: "median_view_10_moi", label: "Median 10" },
+            { key: "xu_huong_pct", label: "Xu hướng" },
+            { key: "view_moi_ngay", label: "View/ngày" },
+            { key: "ngay_tu_video_cuoi", label: "Im lặng" },
+            { key: "_spark", label: "Sub 30 lần", nosort: true }
+          ];
+          if (state.showDetail) {
+            cols.push(
+              { key: "nhip_dang_ngay", label: "Nhịp đăng" },
+              { key: "so_shorts_trong_20", label: "Shorts/20" },
+              { key: "_seo", label: "Lỗi SEO", nosort: true },
+              { key: "tong_video", label: "Tổng video" },
+              { key: "view_video_top", label: "View video top" },
+              { key: "video_top", label: "Video nhiều view nhất", nosort: true }
+            );
+          }
+          return cols;
+        }
+
+        function sortValue(r, key) {
+          if (key === "_delta") {
+            var d = subDelta(r);
+            return d === null ? -Infinity : d;
+          }
+          if (key === "ten_kenh") return (r.ten_kenh || "").toLowerCase();
+          var v = num(r[key]);
+          return v === null ? -Infinity : v;
+        }
+
+        // Tren dien thoai bang o dang the nen khong con tieu de cot de bam.
+        // O chon nay lam thay viec do, va luon bam theo dung danh sach cot hien co.
+        function renderSortOptions(cols) {
+          var sel = $("sort-by");
+          sel.textContent = "";
+          cols.forEach(function (c) {
+            if (c.nosort) return;
+            var o = el("option", { value: c.key, text: c.label });
+            if (c.key === state.sortKey) o.selected = true;
+            sel.appendChild(o);
+          });
+        }
+
+        function renderTable() {
+          var cols = columns();
+          var thead = $("table").querySelector("thead");
+          var tbody = $("table").querySelector("tbody");
+          thead.textContent = "";
+          tbody.textContent = "";
+
+          var tr = el("tr");
+          cols.forEach(function (c) {
+            var th = el("th", { text: c.label });
+            if (!c.nosort) {
+              if (state.sortKey === c.key) th.className = "sorted" + (state.sortAsc ? " asc" : "");
+              th.addEventListener("click", function () {
+                if (state.sortKey === c.key) state.sortAsc = !state.sortAsc;
+                else {
+                  state.sortKey = c.key;
+                  state.sortAsc = c.key === "ten_kenh";
+                }
+                renderTable();
+              });
+            } else {
+              th.style.cursor = "default";
+            }
+            tr.appendChild(th);
+          });
+          thead.appendChild(tr);
+          renderSortOptions(cols);
+
+          var rows = state.rows.slice().sort(function (a, b) {
+            var va = sortValue(a, state.sortKey);
+            var vb = sortValue(b, state.sortKey);
+            var cmp = va < vb ? -1 : va > vb ? 1 : 0;
+            return state.sortAsc ? cmp : -cmp;
+          });
+
+          rows.forEach(function (r) {
+            var row = el("tr");
+            cols.forEach(function (c) {
+              var td = cellNode(r, c.key);
+              // Tren dien thoai bang doi thanh the, td::before lay nhan tu day
+              td.setAttribute("data-label", c.label);
+              row.appendChild(td);
+            });
+            tbody.appendChild(row);
+          });
+        }
+
+        function cellNode(r, key) {
+          if (key === "ten_kenh") {
+            var link = el("a", {
+              text: r.ten_kenh || r.channel_id,
+              href: "https://www.youtube.com/channel/" + r.channel_id,
+              target: "_blank",
+              rel: "noreferrer",
+              title: r.ten_kenh || ""
+            });
+            // Anh lay tu danh sach kenh; r.anh chi con o snapshot cu truoc day
+            var anh = avatarOf(r.channel_id) || r.anh;
+            var kids = [];
+            if (anh) kids.push(el("img", { src: anh, alt: "" }));
+            kids.push(link);
+            return el("td", null, [el("div", { class: "chan" }, kids)]);
+          }
+
+          if (key === "_delta") {
+            var d = subDelta(r);
+            if (d === null) return el("td", { class: "dim", text: "—" });
+            if (d === 0) return el("td", { class: "dim", text: "0" });
+            return el("td", {
+              class: d > 0 ? "up" : "down",
+              text: (d > 0 ? "+" : "−") + fmt(Math.abs(d))
+            });
+          }
+
+          if (key === "xu_huong_pct") {
+            var t = num(r.xu_huong_pct);
+            if (t === null) return el("td", { class: "dim", text: "n/a" });
+            var cls = t > 0 ? "up" : t <= -30 ? "warn-cell" : t < 0 ? "down" : "dim";
+            return el("td", { class: cls, text: (t > 0 ? "+" : "") + Math.round(t) + "%" });
+          }
+
+          if (key === "ngay_tu_video_cuoi") {
+            var days = num(r.ngay_tu_video_cuoi);
+            if (days === null) return el("td", { class: "dim", text: "—" });
+            return el("td", { class: days > 21 ? "warn-cell" : "", text: days + "d" });
+          }
+
+          if (key === "_spark") return el("td", null, [sparkline(r.channel_id)]);
+
+          if (key === "_seo") {
+            var n = num(r.so_video_kiem_tra) || 0;
+            var td = el("td");
+            // Gom vao 1 the con: tren dien thoai o la flex, de roi 3 so se bi
+            // day ra hai dau hang thay vi dung canh nhau
+            var inner = el("span");
+            var bits = [
+              ["Title dài", r.loi_title_dai],
+              ["Mô tả ngắn", r.loi_mo_ta_ngan],
+              ["Thiếu tag", r.loi_thieu_tag]
+            ];
+            bits.forEach(function (b, i) {
+              if (i) inner.appendChild(document.createTextNode(" · "));
+              var cls = n && num(b[1]) >= n * 0.5 ? "warn-cell" : "dim";
+              inner.appendChild(
+                el("span", { class: cls, text: String(num(b[1]) || 0), title: b[0] })
+              );
+            });
+            td.appendChild(inner);
+            td.title = "Title dài / Mô tả ngắn / Thiếu tag — trong " + n + " video mới nhất";
+            return td;
+          }
+
+          if (key === "video_top") {
+            var cell = el("td", { class: "top-title" });
+            var text = r.video_top || "—";
+            var tip = r.video_top ? r.video_top + " — " + fmt(r.view_video_top) + " view" : "";
+            if (r.video_top_id) {
+              cell.appendChild(
+                el("a", {
+                  text: text,
+                  href: "https://www.youtube.com/watch?v=" + r.video_top_id,
+                  target: "_blank",
+                  rel: "noreferrer",
+                  title: tip
+                })
+              );
+            } else {
+              cell.textContent = text;
+              cell.title = tip;
+            }
+            return cell;
+          }
+
+          if (key === "nhip_dang_ngay") {
+            var c = num(r.nhip_dang_ngay);
+            return c === null
+              ? el("td", { class: "dim", text: "—" })
+              : el("td", { text: c.toFixed(1).replace(".", ",") + "d" });
+          }
+
+          var v = num(r[key]);
+          return v === null ? el("td", { class: "dim", text: "—" }) : el("td", { text: fmt(v) });
+        }
+
+        // Duong sub cua 30 lan cap nhat gan nhat
+        function sparkline(channelId) {
+          var pts = [];
+          state.snapshots.slice(-30).forEach(function (s) {
+            var row = null;
+            s.rows.forEach(function (r) {
+              if (r.channel_id === channelId) row = r;
+            });
+            var v = row ? num(row.subs) : null;
+            if (v !== null) pts.push(v);
+          });
+
+          var w = 70;
+          var h = 20;
+          var svg = svgEl("svg", { class: "spark", width: w, height: h, viewBox: "0 0 " + w + " " + h });
+          if (pts.length < 2) {
+            svg.setAttribute("class", "spark dim");
+            svg.appendChild(
+              svgEl("line", {
+                x1: 2,
+                y1: h / 2,
+                x2: w - 2,
+                y2: h / 2,
+                stroke: "currentColor",
+                "stroke-opacity": 0.25
+              })
+            );
+            return svg;
+          }
+
+          var min = Math.min.apply(null, pts);
+          var max = Math.max.apply(null, pts);
+          var span = max - min || 1;
+          function px(i) {
+            return 1 + (i * (w - 2)) / (pts.length - 1);
+          }
+          function py(v) {
+            return h - 2 - ((v - min) / span) * (h - 4);
+          }
+          var d = pts
+            .map(function (v, i) {
+              return (i ? "L" : "M") + px(i).toFixed(1) + " " + py(v).toFixed(1);
+            })
+            .join(" ");
+          var rising = pts[pts.length - 1] >= pts[0];
+          var color = rising ? "var(--up)" : "var(--down)";
+          svg.appendChild(
+            svgEl("path", {
+              d: d,
+              fill: "none",
+              stroke: color,
+              "stroke-width": 1.5,
+              "stroke-linejoin": "round",
+              "stroke-linecap": "round"
+            })
+          );
+          svg.appendChild(
+            svgEl("circle", {
+              cx: px(pts.length - 1),
+              cy: py(pts[pts.length - 1]),
+              r: 1.8,
+              fill: color
+            })
+          );
+          return svg;
+        }
+
+        function renderAlerts() {
+          var box = $("alerts");
+          box.textContent = "";
+          var any = false;
+          state.rows.forEach(function (r) {
+            var msgs = alertsFor(r);
+            if (!msgs.length) return;
+            any = true;
+            var ul = el("ul");
+            msgs.forEach(function (m) {
+              ul.appendChild(el("li", { text: m }));
+            });
+            box.appendChild(
+              el("div", { class: "alert" }, [
+                el("div", { class: "who", text: r.ten_kenh || r.channel_id }),
+                ul
+              ])
+            );
+          });
+          if (!any) box.appendChild(el("p", { class: "ok", text: "Không có cảnh báo nào." }));
+        }
+
+        // --------------------------------------------------- danh sach kenh
+
+        function renderChannelList() {
+          var box = $("channel-list");
+          var list = getChannels();
+          box.textContent = "";
+          renderStorageInfo();
+
+          if (!list.length) {
+            box.appendChild(
+              el("p", {
+                class: "empty-list",
+                text: "Chưa có kênh nào. Dán link kênh vào ô trên rồi bấm Thêm kênh."
+              })
+            );
+            return;
+          }
+
+          list.forEach(function (c) {
+            var who = el("div", { class: "who" }, [
+              el("b", { text: c.ten }),
+              el("span", { text: c.id })
+            ]);
+            var rm = el("button", { class: "rm", type: "button", text: "Xoá" });
+            rm.addEventListener("click", function () {
+              if (!confirm("Bỏ theo dõi kênh “" + c.ten + "”?")) return;
+              setChannels(
+                getChannels().filter(function (x) {
+                  return x.id !== c.id;
+                })
+              );
+              renderChannelList();
+              showStatus("Đã bỏ theo dõi “" + c.ten + "”.");
+            });
+
+            var kids = [];
+            if (c.anh) kids.push(el("img", { src: c.anh, alt: "" }));
+            kids.push(who, rm);
+            box.appendChild(el("div", { class: "chan-row" }, kids));
+          });
+        }
+
+        // Bao cho nguoi dung biet dang chiem bao nhieu cho trong trinh duyet.
+        // Han muc localStorage thuong la 5 MB moi trang.
+        function renderStorageInfo() {
+          var box = $("storage-info");
+          var raw = "";
+          try {
+            raw = window.localStorage.getItem(STORE_KEY) || "";
+          } catch (e) {
+            box.textContent = "Trình duyệt đang chặn lưu trữ.";
+            return;
+          }
+          var bytes = raw.length * 2; // localStorage luu UTF-16, 2 byte/ky tu
+          var size =
+            bytes > 1048576
+              ? (bytes / 1048576).toFixed(1).replace(".", ",") + " MB"
+              : Math.max(Math.round(bytes / 1024), 1) + " KB";
+          var days = getSnapshots().length;
+          box.textContent =
+            "Đang chiếm " + size + " (" + days + " ngày lịch sử, tối đa " + MAX_SNAPSHOTS + ")";
+        }
+
+        // Chua co key thi chan het: khong hien bang, khong hien khung kenh
+        function showKeyGate(show) {
+          $("key-panel").hidden = !show;
+          $("refresh").disabled = show;
+          $("toggle-channels").disabled = show;
+          if (show) {
+            $("channels-panel").hidden = true;
+            $("content").hidden = true;
+            $("empty").hidden = true;
+            $("api-key").focus();
+          }
+        }
+
+        function doSaveKey() {
+          var input = $("api-key");
+          var btn = $("save-key");
+          var key = input.value.trim();
+          if (!key) {
+            showStatus("Chưa nhập gì cả. Dán API key vào ô rồi bấm Lưu key.", "error");
+            return;
+          }
+
+          btn.disabled = true;
+          showStatus("Đang kiểm tra key...", "busy");
+          // Goi thu 1 lenh that de biet key co dung khong, thay vi de nguoi dung
+          // loay hoay den luc them kenh moi bao loi
+          setApiKey(key);
+          lookupChannel("UCmNz_-VMK1rUpAegk2mmpUg")
+            .then(function () {
+              input.value = "";
+              showKeyGate(false);
+              showStatus("Key dùng được. Giờ thêm kênh cần theo dõi.");
+              openChannels(true);
+            })
+            .catch(function (e) {
+              setApiKey(""); // key hong thi khong giu lai
+              showStatus(e.message, "error");
+            })
+            .then(function () {
+              btn.disabled = false;
+              renderMeta();
+            });
+        }
+
+        function openChannels(show) {
+          $("channels-panel").hidden = !show;
+          $("toggle-channels").textContent = show ? "Đóng danh sách" : "Thêm kênh";
+          if (show) {
+            renderStorageInfo(); // so lieu luon moi moi lan mo khung
+            $("new-channel").focus();
+          }
+        }
+
+        function doAddChannel() {
+          var input = $("new-channel");
+          var btn = $("add-channel");
+          var raw = input.value.trim();
+          if (!raw) return;
+
+          if (unitsLeft() < 1) {
+            showStatus(
+              "Hết " + DAILY_UNIT_BUDGET + " units tự đặt cho hôm nay nên chưa kiểm tra được " +
+                "kênh mới. Bộ đếm về 0 lúc 0h giờ Thái Bình Dương (khoảng 14–15h giờ VN).",
+              "error"
+            );
+            return;
+          }
+
+          btn.disabled = true;
+          showStatus("Đang kiểm tra kênh...", "busy");
+
+          lookupChannel(raw)
+            .then(function (ch) {
+              var list = getChannels();
+              var trung = list.filter(function (x) {
+                return x.id === ch.id;
+              })[0];
+              if (trung) {
+                showStatus("“" + trung.ten + "” đã có trong danh sách rồi.", "error");
+                return;
+              }
+              list.push(ch);
+              setChannels(list);
+              input.value = "";
+              renderChannelList();
+              showStatus("Đã thêm “" + ch.ten + "”. Bấm Cập nhật dữ liệu để lấy số liệu.");
+            })
+            .catch(function (e) {
+              showStatus(e.message, "error");
+            })
+            .then(function () {
+              renderMeta(); // unit vua tieu phai hien ngay tren dong chu nho
+              btn.disabled = false;
+              input.focus();
+            });
+        }
+
+        // ------------------------------------------------------------ hanh vi
+
+        function doRefresh() {
+          var btn = $("refresh");
+          var ids = getChannels().map(function (c) {
+            return c.id;
+          });
+          if (!ids.length) {
+            showStatus("Chưa có kênh nào để theo dõi. Thêm kênh ở khung bên dưới.", "error");
+            openChannels(true);
+            return Promise.resolve();
+          }
+
+          // Chan tu truoc khi goi, de khong chay duoc nua chung roi moi het
+          var can = estimateUnits(ids.length);
+          if (can > unitsLeft()) {
+            showStatus(
+              "Lần này cần " + can + " units nhưng hôm nay chỉ còn " + unitsLeft() + "/" +
+                DAILY_UNIT_BUDGET + ". Bộ đếm về 0 lúc 0h giờ Thái Bình Dương " +
+                "(khoảng 14–15h giờ VN), hoặc sửa DAILY_UNIT_BUDGET trong file.",
+              "error"
+            );
+            return Promise.resolve();
+          }
+
+          btn.disabled = true;
+          showStatus("Đang bắt đầu...", "busy");
+
+          return collect(ids, getApiKey(), function (m) {
+            showStatus(m, "busy");
+          })
+            .then(function (res) {
+              state.snapshots = addSnapshot(res.rows);
+              render();
+              if (storageBroken) {
+                showStatus(
+                  "Xong. Lưu ý: trình duyệt đang chặn lưu trữ nên dữ liệu sẽ mất khi đóng tab.",
+                  "error"
+                );
+              } else {
+                showStatus("");
+              }
+            })
+            .catch(function (e) {
+              showStatus(e.message, "error");
+            })
+            .then(function () {
+              renderMeta(); // ke ca khi loi giua chung, so unit da tieu van phai dung
+              btn.disabled = false;
+            });
+        }
+
+        function init() {
+          state.snapshots = getSnapshots();
+          render();
+          renderChannelList();
+
+          if (storageBroken) {
+            showStatus(
+              "Trình duyệt đang chặn lưu trữ cục bộ — trang vẫn dùng được nhưng danh sách kênh " +
+                "và lịch sử sẽ mất khi đóng tab.",
+              "error"
+            );
+          }
+
+          if (!getApiKey()) {
+            // Lan dau vao: hoi key truoc, chua cho lam gi khac
+            showKeyGate(true);
+          } else if (!getChannels().length) {
+            // Da co key nhung chua co kenh nao -> mo san khung danh sach kenh
+            openChannels(true);
+          }
+
+          $("save-key").addEventListener("click", doSaveKey);
+          $("api-key").addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              doSaveKey();
+            }
+          });
+          $("show-key").addEventListener("click", function () {
+            var input = $("api-key");
+            var hidden = input.type === "password";
+            input.type = hidden ? "text" : "password";
+            $("show-key").textContent = hidden ? "Ẩn key" : "Hiện key";
+          });
+
+          $("refresh").addEventListener("click", doRefresh);
+          $("toggle-channels").addEventListener("click", function () {
+            openChannels($("channels-panel").hidden);
+          });
+          $("add-channel").addEventListener("click", doAddChannel);
+          $("new-channel").addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              doAddChannel();
+            }
+          });
+
+          $("change-key").addEventListener("click", function () {
+            setApiKey("");
+            showKeyGate(true);
+            showStatus("Dán API key mới vào ô bên dưới.");
+          });
+
+          $("wipe-history").addEventListener("click", function () {
+            if (!confirm("Xoá lịch sử các ngày đã lưu? Danh sách kênh và API key vẫn giữ.")) return;
+            loadAll().snapshots = [];
+            saveAll();
+            state.snapshots = [];
+            render();
+            renderStorageInfo();
+            showStatus("Đã xoá lịch sử.");
+          });
+
+          $("wipe-all").addEventListener("click", function () {
+            if (!confirm("Xoá sạch API key, danh sách kênh và toàn bộ lịch sử? Không hoàn tác được.")) {
+              return;
+            }
+            try {
+              window.localStorage.removeItem(STORE_KEY);
+            } catch (e) {
+              /* bi chan thi thoi, tai lai la sach */
+            }
+            window.location.reload();
+          });
+
+          $("show-detail").addEventListener("change", function (e) {
+            state.showDetail = e.target.checked;
+            renderTable();
+          });
+
+          $("sort-by").addEventListener("change", function (e) {
+            state.sortKey = e.target.value;
+            state.sortAsc = e.target.value === "ten_kenh"; // ten kenh xep A-Z, so xep lon truoc
+            renderTable();
+          });
+
+          // Mo trang la tu lay du lieu luon, tru khi hom nay da cap nhat roi
+          if (getApiKey() && getChannels().length) {
+            var hasToday = state.snapshots.some(function (s) {
+              return s.date === todayStr();
+            });
+            if (!hasToday) doRefresh();
+          }
+        }
+
+        init();
+      })();
+    </script>
+  </body>
+</html>

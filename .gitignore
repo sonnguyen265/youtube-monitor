@@ -1,0 +1,108 @@
+# ============================================================
+#  QUAN TRONG - bi mat, tuyet doi khong day len GitHub
+# ============================================================
+# API key that cua ban (chi ban Python doc file nay).
+# Lo day len roi thi phai vao Google Cloud Console xoa key va tao key moi,
+# vi lich su git van giu lai du da xoa file.
+api_key.txt
+*.key
+*.pem
+.env
+.env.*
+!.env.example
+secrets.json
+credentials.json
+client_secret*.json
+token.json
+*_token.txt
+
+# ============================================================
+#  Du lieu rieng cua may nay
+# ============================================================
+# Snapshot da chay - moi may mot khac, khong nen dung chung
+data/
+*.csv
+
+# ============================================================
+#  Python
+# ============================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+env/
+venv/
+.venv/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ============================================================
+#  Node (neu sau nay them cong cu build)
+# ============================================================
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# ============================================================
+#  Editor / IDE
+# ============================================================
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+*.sublime-workspace
+
+# ============================================================
+#  He dieu hanh
+# ============================================================
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+desktop.ini
+$RECYCLE.BIN/
+*.lnk
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+# Linux
+.directory
+.Trash-*
+
+# ============================================================
+#  Log, file tam, ban nhap
+# ============================================================
+*.log
+*.tmp
+*.temp
+*.bak
+*.old
+*.orig
+*.rej
+tmp/
+temp/
+.cache/
+
+# ============================================================
+#  Cong cu phu tro
+# ============================================================
+.gstack/
+.claude/

@@ -1,0 +1,10 @@
+# Danh sach kenh can theo doi - moi dong 1 kenh.
+# Chap nhan 3 dang, tron lan thoai mai:
+#   https://www.youtube.com/@tenkenh
+#   @tenkenh
+#   UCxxxxxxxxxxxxxxxxxxxxxx        (channel ID, chinh xac nhat)
+# Dat dau # o dau dong de tam tat 1 kenh.
+#
+# XOA cac dong vi du ben duoi va dan 10 kenh cua ban vao.
+
+http://www.youtube.com/@nguyentrongson694
